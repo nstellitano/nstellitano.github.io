@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head lang="en">
+
+    <title>Bank of England Visualization Competition</title>
+    <meta charset="UTF-8">
+
+</head>
+
+<!--Load Libraries-->
+<script src="js/d3.min.js"></script>
+<script src = "http://d3js.org/queue.v1.min.js"></script>
+<script src="libs/jquery/jquery-2.1.1.min.js" charset="utf-8"></script>
+
+
+<!-- add own vis classes-->
+<script  src= "js/sankey.js"></script>
+<script  src = "js/boe.js"></script>
+
+<!--Stylesheets-->
+<link rel="stylesheet" type="text/css" href="libs/bootstrap/css/bootstrap.min.css">
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
+
+<!-- add own stylesheet-->
+<link rel="stylesheet" type="text/css" href="css/myStyle.css">
+
+
+
+
+
+<body>
+
+<!--Setup the overall structure of the website-->
+<div class = "container">
+    <div id="header" class="header">
+        <h1>Visualizing the Head of Household Survey</h1>
+            <div id="nav">
+                <!--<ul>-->
+                    <!--<li><a href="">Home</a></li>-->
+                    <!--<li><a href="">About</a></li>-->
+                    <!--<li><a href="">Author</a></li>-->
+                <!--</ul>-->
+                <h3>Choose a selection of questions and visualize how they are connected through time</h3>
+            </div>
+    </div>
+
+
+
+
+    <div  id = "sankey_dash" class="sankey_dash">
+
+        <form action="#" method="post" id="drop_down" class= "drop_down" >
+            <p>
+                <select name = "drop_down1" id = "drop_down1" >
+                    <option value= "no_option">Selection</option>
+                    <option value= "region" selected>Region</option>
+                    <option value= "sex">Gender</option>
+                    <option value= "age_grp">Age Group</option>
+                    <option value= "jbstat">Working status</option>
+                    <option value= "mastat">Martial Status</option>
+                    <option value= "tenure">Housing Tenure</option>
+                </select>
+
+            <select name = "drop_down2" id = "drop_down2" >
+                <option value= "no_option">Selection</option>
+                <option value= "region">Region</option>
+                <option value= "sex">Gender</option>
+                <option value= "age_grp"selected>Age Group</option>
+                <option value= "jbstat">Working status</option>
+                <option value= "mastat">Martial Status</option>
+                <option value= "tenure">Housing Tenure</option>
+            </select>
+
+            <select name = "drop_down3" id = "drop_down3" >
+                <option value= "no_option">Selection</option>
+                <option value= "region">Region</option>
+                <option value= "sex">Gender</option>
+                <option value= "age_grp">Age Group</option>
+                <option value= "jbstat">Working status</option>
+                <option value= "mastat">Martial Status</option>
+                <option value= "tenure">Housing Tenure</option>
+            </select>
+
+            <select name = "drop_down4" id = "drop_down4" >
+                <option value= "no_option">Selection</option>
+                <option value= "region">Region</option>
+                <option value= "sex">Gender</option>
+                <option value= "age_grp">Age Group</option>
+                <option value= "jbstat">Working status</option>
+                <option value= "mastat">Martial Status</option>
+                <option value= "tenure">Housing Tenure</option>
+            </select>
+
+            <!--<select name = "drop_down5" id = "drop_down5" >-->
+                <!--<option value= "no_option">Selection</option>-->
+                <!--<option value= "sex">Gender</option>-->
+                <!--<option value= "age_grp">Age Group</option>-->
+                <!--<option value= "mastat">Martial Status</option>-->
+                <!--<option value= "tenure">Housing Tenure</option>-->
+            <!--</select>-->
+        </p>
+        </form>
+
+    </div>
+
+<p></p>
+
+        <div>
+        <label>
+            <p>
+                <input type="button" id ="button" value="Submit" />
+            </p>
+        </div>
+
+    <div>
+        </label>
+            <label id="slider">
+                <text id="selected_year">Selected Year</text>
+                <input type="range" name="slider-time" min="2004" max="2013" step="1" value="0" id="slider-time" oninput=";" ondblclick="">
+
+            </label>
+        </div>
+
+
+
+
+
+
+    <div  id = "sankey" class="sankey">
+
+    </div>
+
+
+</div>
+
+
+
+
+<script>
+$(function() {
+
+
+   // d3.select.("#country_list").write("test");
+    //Create EventHandler
+    var MyEventHandler = new Object();
+    sank = new sankey_chart(d3.select("#sankey"))
+    document.getElementById("selected_year").innerHTML = String(2004)
+
+
+    var _2004, _2005, _2006, _2007, _2008, _2009, _2010, _2011, _2012, _2013
+    var sankey_2004, sankey_2005, sankey_2006, sankey_2005, sankey_2007, sankey_2008, sankey_2009, sankey_2010, sankey_2011, sankey_2012,  sankey_2013
+
+
+    //------------Load the Data and begin-------------------------------------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------------------------------------------------------
+
+    queue()
+            .defer(d3.csv, "data/2004_HH.csv")
+            .defer(d3.csv, "data/2005_HH.csv")
+            .defer(d3.csv, "data/2006_HH.csv")
+            .defer(d3.csv, "data/2007_HH.csv")
+            .defer(d3.csv, "data/2008_HH.csv")
+            .defer(d3.csv, "data/2009_HH.csv")
+            .defer(d3.csv, "data/2010_HH.csv")
+            .defer(d3.csv, "data/2011_HH.csv")
+            .defer(d3.csv, "data/2012_HH.csv")
+            .defer(d3.csv, "data/2013_HH.csv")
+
+            .await(ready)
+    //Ready function takes the data files loaded via the queue function and begins with loading the WorldMap
+
+
+    function ready(error, d_2004, d_2005, d_2006, d_2007, d_2008, d_2009, d_2010, d_2011, d_2012, d_2013) {
+        _2004 = d_2004;
+        _2005 = d_2005;
+        _2006 = d_2006;
+        _2007 = d_2007;
+        _2008 = d_2008;
+        _2009 = d_2009;
+        _2010 = d_2010;
+        _2011 = d_2011;
+        _2012 = d_2012;
+        _2013 = d_2013;
+
+
+
+
+//
+       $("#button").click(function(){
+           var survey= _2004;
+           var selection = [], selection1, selection2, selection3, selection4, selection5;
+           var question_num = []
+           var selection_1 = 0, selection_2 = 0, selection_3 = 0, selection_4 = 0;
+
+
+            selection1 = getSelectedOptions(document.getElementById("drop_down1"))
+            selection2 = getSelectedOptions(document.getElementById("drop_down2"))
+            selection3 = getSelectedOptions(document.getElementById("drop_down3"))
+            selection4 = getSelectedOptions(document.getElementById("drop_down4"))
+//            selection5 = getSelectedOptions(document.getElementById("drop_down5"))
+
+
+
+           for(i=0; i<5; i++){
+               if(i==0){
+                   selection.push(selection1[0].value)
+               }else if(i==1&& selection2[0].value != "no_option"){
+                   var check = 0;
+                   for(z=0; z<selection.length; z++){
+                       if(selection2[0].value == selection[z]){check++}
+                   }
+                   if(check == 0){ selection.push(selection2[0].value)}
+               }else if(i ==2 && selection3[0].value != "no_option" ){
+                   var check = 0;
+                   for(z=0; z<selection.length; z++){
+                       if(selection3[0].value == selection[z]){check++}
+                   }
+                   if(check == 0){ selection.push(selection3[0].value)}
+               }else if(i ==3 && selection4[0].value != "no_option"){
+                   var check = 0;
+                   for(z=0; z<selection.length; z++){
+                       if(selection4[0].value == selection[z]){check++}
+                   }
+                   if(check == 0){ selection.push(selection4[0].value)}
+               }
+           }
+
+           console.log(selection)
+           for(cycle=0; cycle< 10; cycle++) {
+
+               if (cycle == 0) {
+                   survey = _2004
+               }
+               if (cycle == 1) {
+                   survey = _2005
+               }
+               if (cycle == 2) {
+                   survey = _2006
+               }
+               if (cycle == 3) {
+                   survey = _2007
+               }
+               if (cycle == 4) {
+                   survey = _2008
+               }
+               if (cycle == 5) {
+                   survey = _2009
+               }
+               if (cycle == 6) {
+                   survey = _2010
+               }
+               if (cycle == 7) {
+                   survey = _2011
+               }
+               if (cycle == 8) {
+                   survey = _2012
+               }
+               if (cycle == 9) {
+                   survey = _2013
+               }
+               question_num = [];
+
+               for (i = 0; i < selection.length; i++) {
+                   if (i == 0) {
+                       selection_1 = selection[i];
+                       for (ii = 1; ii < 244; ii++) {
+                           if (survey[0][ii] == selection[i]) {
+                               question_num.push(ii)
+                           }
+                       }
+                   }
+                   if (i == 1) {
+                       selection_2 = selection[i];
+                       for (z = 1; z < 244; z++) {
+                           if (survey[0][z] == selection[i]) {
+                               question_num.push(z)
+                           }
+                       }
+                   }
+                   if (i == 2) {
+                       selection_3 = selection[i];
+                       for (z = 1; z < 244; z++) {
+                           if (survey[0][z] == selection[i]) {
+                               question_num.push(z)
+                           }
+                       }
+                   }
+                   if (i == 3) {
+                       selection_4 = selection[i];
+                       for (z = 1; z < 244; z++) {
+                           if (survey[0][z] == selection[i]) {
+                               question_num.push(z)
+                           }
+                       }
+                   }
+               }
+
+
+               console.log(question_num)
+
+
+               var sankey_info = {
+                   "nodes": [],
+                   "links": []
+               }
+
+
+               var question = [
+                   {"name": "region", "Description": "Region", "answers": ["East Anglia", "East Midlands", "Greater London", "North", "North West",
+                       "Scotland", "South East","South West",  "West Midlands", "Wales", "Yorkshire & Humberside"]},
+                   {"name": "sex", "Description": "Gender", "answers": ["Male", "Female"]},
+                   {"name": "jbstat",
+                       "Description": "Working Status",
+                       "answers": ["Self Employed", "In Paid Employment ", "Unemployed", "Retired",
+                           "Full Time Student", "Not in work - long term illness or disability ", "Something Else"]},
+                   {
+                       "name": "age_grp",
+                       "Description": "Age Groups",
+                       "answers": ["18-24", "25-34", "35-44", "45-54", "55-64", "65+"]
+                   },
+                   {
+                       "name": "mastat",
+                       "Description": "Martial Status",
+                       "answers": ["Married or Couple", "Widowed/Divorced/Separated", "Never Married", "Refused"]
+                   },
+                   {
+                       "name": "tenure",
+                       "Description": "Housing Tenure",
+                       "answers": ["Owned outright", "Owned mortgage", "Local Authority Rented",
+                                   "Private rented", "Other/Don't know/Refused" ]}
+
+
+               ];
+
+
+               var counter = 0;
+               var seperater = 0;
+               for (i = 0; i < question.length; i++) {
+                   if (selection_1 == question[i].name) { //replace with values from drop down menus
+                       for (z = 0; z < question[i].answers.length; z++) {
+
+                           sankey_info.nodes.push({
+                               "id": 1,
+                               "name": question[i].answers[z],
+                               "description": question[i].Description
+                           })
+                           counter++;
+
+                       }
+                   }
+               }
+
+               var place_holder = counter;
+               for (i = 0; i < question.length; i++) {
+                   if (selection_2 == question[i].name) { //replace with values from drop down menus
+                       for (z = 0; z < question[i].answers.length; z++) {
+                           sankey_info.nodes.push({
+                               "id": 1,
+                               "name": question[i].answers[z],
+                               "description": question[i].Description
+                           })
+                           counter++
+                           for (h = 0; h < place_holder; h++) {
+                               sankey_info.links.push({
+                                   "id": 1,
+                                   "source": sankey_info.nodes[h].name,
+                                   "target": question[i].answers[z],
+                                   "value": 0
+                               })
+
+                           }
+                       }
+                   }
+               }
+
+               seperator = place_holder;
+               place_holder = counter;
+               for (i = 0; i < question.length; i++) {
+                   if (selection_3 == question[i].name) { //replace with values from drop down menus
+                       for (z = 0; z < question[i].answers.length; z++) {
+                           sankey_info.nodes.push({
+                               "id": 1,
+                               "name": question[i].answers[z],
+                               "description": question[i].Description
+                           })
+                           counter++;
+                           for (h = seperator; h < place_holder; h++) {
+                               sankey_info.links.push({
+                                   "id": 1,
+                                   "source": sankey_info.nodes[h].name,
+                                   "target": question[i].answers[z],
+                                   "value": 0
+                               });
+
+                           }
+                       }
+                   }
+               }
+
+               seperator = place_holder;
+               place_holder = counter;
+               for (i = 0; i < question.length; i++) {
+                   if (selection_4 == question[i].name) { //replace with values from drop down menus
+                       for (z = 0; z < question[i].answers.length; z++) {
+                           sankey_info.nodes.push({
+                               "id": 1,
+                               "name": question[i].answers[z],
+                               "description": question[i].Description
+                           })
+                           counter++;
+                           for (h = seperator; h < place_holder; h++) {
+                               sankey_info.links.push({
+                                   "id": 1,
+                                   "source": sankey_info.nodes[h].name,
+                                   "target": question[i].answers[z],
+                                   "value": 0
+                               });
+
+                           }
+                       }
+                   }
+               }
+
+               for (i = 0; i < sankey_info.links.length; i++) {
+                   var source = sankey_info.links[i].source
+                   var target = sankey_info.links[i].target
+                   var total_weight = 0;
+
+                   for (z = 0; z < survey.length; z++) {
+                       if (survey[z][question_num[0]] == source && survey[z][question_num[1]] == target) {
+                           total_weight = total_weight + parseInt(survey[z][2]);
+                           sankey_info.links[i].value = total_weight
+                       }
+                   }
+
+
+                   for (z = 0; z < survey.length; z++) {
+                       if (survey[z][question_num[1]] == source && survey[z][question_num[2]] == target) {
+                           total_weight = total_weight + parseInt(survey[z][2]);
+                           sankey_info.links[i].value = total_weight
+                       }
+                   }
+
+
+                   for (z = 0; z < survey.length; z++) {
+                       if (survey[z][question_num[2]] == source && survey[z][question_num[3]] == target) {
+                           total_weight = total_weight + parseInt(survey[z][2]);
+                           sankey_info.links[i].value = total_weight
+                       }
+                   }
+
+
+                   for (z = 0; z < survey.length; z++) {
+                       if (survey[z][question_num[3]] == source && survey[z][question_num[4]] == target) {
+                           total_weight = total_weight + parseInt(survey[z][2]);
+                           sankey_info.links[i].value = total_weight
+                       }
+                   }
+
+
+               }
+
+
+               for (i = 0; i < sankey_info.nodes.length; i++) {
+                   sankey_info.nodes[i].id = i;
+               }
+               for (i = 0; i < sankey_info.links.length; i++) {
+                   sankey_info.links[i].id = i;
+               }
+
+
+               if (cycle == 0) {
+                   sankey_2004 = sankey_info
+               }
+               if (cycle == 1) {
+                   sankey_2005 = sankey_info
+               }
+               if (cycle == 2) {
+                   sankey_2006 = sankey_info
+               }
+               if (cycle == 3) {
+                   sankey_2007 = sankey_info
+               }
+               if (cycle == 4) {
+                   sankey_2008 = sankey_info
+               }
+               if (cycle == 5) {
+                   sankey_2009 = sankey_info
+               }
+               if (cycle == 6) {
+                   sankey_2010 = sankey_info
+               }
+               if (cycle == 7) {
+                   sankey_2011 = sankey_info
+               }
+               if (cycle == 8) {
+                   sankey_2012 = sankey_info
+               }
+               if (cycle == 9) {
+                   sankey_2013 = sankey_info
+               }
+
+
+
+           }
+
+           var year = document.getElementById("slider-time").value
+           var year = document.getElementById("selected_year").innerHTML = String(year)
+           if(year == 2004){sank.update(sankey_2004)}
+           if(year == 2005){sank.update(sankey_2005)}
+           if(year == 2006){sank.update(sankey_2006)}
+           if(year == 2007){sank.update(sankey_2007)}
+           if(year == 2008){sank.update(sankey_2008)}
+           if(year == 2009){sank.update(sankey_2009)}
+           if(year == 2010){sank.update(sankey_2010)}
+           if(year == 2011){sank.update(sankey_2011)}
+           if(year == 2012){sank.update(sankey_2012)}
+           if(year == 2013){sank.update(sankey_2013)}
+
+        });
+
+
+    //------------Events-------------------------------------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+    d3.selectAll("input").on("change", function()
+    {
+
+
+        if (d3.select(this).attr("name") == "slider-time") {
+
+            var year = document.getElementById("slider-time").value
+            document.getElementById("selected_year").innerHTML = String(year)
+            if(year == 2004){sank.update(sankey_2004)}
+            if(year == 2005){sank.update(sankey_2005)}
+            if(year == 2006){sank.update(sankey_2006)}
+            if(year == 2007){sank.update(sankey_2007)}
+            if(year == 2008){sank.update(sankey_2008)}
+            if(year == 2009){sank.update(sankey_2009)}
+            if(year == 2010){sank.update(sankey_2010)}
+            if(year == 2011){sank.update(sankey_2011)}
+            if(year == 2012){sank.update(sankey_2012)}
+            if(year == 2013){sank.update(sankey_2013)}
+
+        }
+
+
+
+
+    });
+
+
+        //------------Helper functions-------------------------------------------------------------------------------------------------------------------------------
+        //-------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+        // arguments: reference to select list, callback function (optional)
+        function getSelectedOptions(sel, fn) {
+            var opts = [], opt;
+
+            // loop through options in select list
+            for (var i=0, len=sel.options.length; i<len; i++) {
+                opt = sel.options[i];
+
+                // check if selected
+                if ( opt.selected ) {
+                    // add to array of option elements to return from this function
+                    opts.push(opt);
+
+                    // invoke optional callback function if provided
+                    if (fn) {
+                        fn(opt);
+                    }
+                }
+            }
+            // return array containing references to selected option elements
+            return opts;
+        }
+
+
+    };
+})
+</script>
+
+</body>
+</html>
