@@ -205,7 +205,7 @@ sankey_chart.prototype.update = function(year){
             that.graph = chart
 
 
-
+console.log(that.graph)
 
     for(i=0; i<that.graph.links.length; i++){
         that.graph.links[i].id = i
