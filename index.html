@@ -369,38 +369,29 @@ $(function() {
     //-------------------------------------------------------------------------------------------------------------------------------------------------
 
     queue()
-
+            .defer(d3.csv, "data/2004_HH.csv")
+            .defer(d3.csv, "data/2005_HH.csv")
+            .defer(d3.csv, "data/2006_HH.csv")
+            .defer(d3.csv, "data/2007_HH.csv")
             .defer(d3.csv, "data/2008_HH.csv")
-
+            .defer(d3.csv, "data/2009_HH.csv")
+            .defer(d3.csv, "data/2010_HH.csv")
+            .defer(d3.csv, "data/2011_HH.csv")
             .await(ready)
     //Ready function takes the data files loaded via the queue function and begins with loading the WorldMap
 
 
-    function ready(error, d_2008) {
+    function ready(error, d_2004, d_2005, d_2006, d_2007, d_2008, d_2009, d_2010, d_2011) {
+        _2004 = d_2004;
+        _2005 = d_2005;
+        _2006 = d_2006;
+        _2007 = d_2007;
         _2008 = d_2008;
+        _2009 = d_2009;
+        _2010 = d_2010;
+        _2011 = d_2011;
 
 
-
-        queue()
-                .defer(d3.csv, "data/2004_HH.csv")
-                .defer(d3.csv, "data/2005_HH.csv")
-                .defer(d3.csv, "data/2006_HH.csv")
-                .defer(d3.csv, "data/2007_HH.csv")
-                .defer(d3.csv, "data/2009_HH.csv")
-                .defer(d3.csv, "data/2010_HH.csv")
-                .defer(d3.csv, "data/2011_HH.csv")
-                .await(ready2)
-
-        function ready2(error, d_2004, d_2005, d_2006, d_2007,d_2009, d_2010, d_2011) {
-            _2004 = d_2004;
-            _2005 = d_2005;
-            _2006 = d_2006;
-            _2007 = d_2007;
-            _2009 = d_2009;
-            _2010 = d_2010;
-            _2011 = d_2011;
-
-        }
 
 
 
@@ -1333,7 +1324,7 @@ console.log(sankey_info.nodes)
         console.log("test")
 
        $("#loading").hide();
-
+   
 
 update();
 
