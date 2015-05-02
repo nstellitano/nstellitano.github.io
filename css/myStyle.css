@@ -26,12 +26,27 @@ body{
 
 }
 
+#loading {
+    /*position:absolute;*/
+    width:97%;
+    top:50px;
+    left:50%;
+    /*margin-left:-150px;*/
+    text-align:center;
+    padding: 10px;
+    font:bold 11px Arial, Helvetica, sans-serif;
+    /*background: #222222;*/
+    /*color: #ffffff;*/
+}
+
+
 #drop_down1, #drop_down2, #drop_down3, #drop_down4{
     font-size: 20px;
     /*padding-right: 15px;*/
     /*padding-left: 10px;*/
     /*padding-bottom: 10px;*/
     /*padding-top: 10px;*/
+    width: 19%;
     margin: 8px;
     margin-bottom: 0px;
     position: relative;
