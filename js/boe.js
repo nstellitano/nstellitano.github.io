@@ -87,7 +87,7 @@ sankey_chart.prototype.initVis = function() {
 
 
 // add in the nodes
-        console.log(that.graph.nodes)
+
 
         var node = this.svg.selectAll(".node")
             .data(that.graph.nodes, function(d) { return d.id})
@@ -125,11 +125,16 @@ sankey_chart.prototype.initVis = function() {
                 return d.color = color(d.name.replace(/ .*/, "")); })
             .style("stroke", function(d) {
                 return d3.rgb(d.color).darker(2); })
-            .append("title")
-            .text(function(d) {
+
+             var title = node.selectAll("title")
+                 .data(function(d) {return [d]})
+
+                    title.enter().append("title").attr("class", "title")
+
+                        title.text(function(d) {
                 return d.name + "\n" + that.format(d.value); });
 
-
+title.exit().remove()
 
         rect.exit().remove()
 
