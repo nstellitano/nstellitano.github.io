@@ -5,7 +5,7 @@
 
 #map-canvas {
     /*width: 500px;*/
-    height: 400px;
+    height: 300px;
     margin: 5%;
     border: solid;
 }
@@ -34,12 +34,17 @@
     width: 35%;
 }
 
+#directions {
+    margin-top: 2%;
+}
+
 #directions-panel {
-    height: 200px;
+    height: 300px;
     float: right;
     width: 100%;
     overflow: scroll;
-    
+    padding: 2%
+
 }
 
 
