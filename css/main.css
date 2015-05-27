@@ -16,12 +16,13 @@
 
 }
 
+
 #geocode_panel {
     /*position: relative;*/
-    width: 45%;
+    width: 99%;
     /*top: 5px;*/
     /*left: 50%;*/
-    margin-left: 28%;
+
     margin-bottom: 1%;
     z-index: 5;
     background-color: #fff;
