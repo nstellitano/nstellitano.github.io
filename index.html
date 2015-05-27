@@ -1,1341 +1,197 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/html">
-<head lang="en">
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>MPAID Locator</title>
 
-    <title>Bank of England Visualization Competition</title>
-    <meta charset="UTF-8">
 
+    <link href='http://fonts.googleapis.com/css?family=Shadows+Into+Light|Indie+Flower' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <script src="js/d3.min.js"></script>
+    <script src="libs/jquery/jquery-2.1.1.min.js" charset="utf-8"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
 
 
 </head>
-
-<!--Load Libraries-->
-<script src="js/d3.min.js"></script>
-<script src = "http://d3js.org/queue.v1.min.js"></script>
-<script src="libs/jquery/jquery-2.1.1.min.js" charset="utf-8"></script>
-
-
-<!-- add own vis classes-->
-<script  src= "js/sankey.js"></script>
-<script  src = "js/boe.js"></script>
-
-<!--Stylesheets-->
-<link rel="stylesheet" type="text/css" href="libs/bootstrap/css/bootstrap.min.css">
-<link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
-
-<!-- add own stylesheet-->
-<link rel="stylesheet" type="text/css" href="css/myStyle.css">
-
-
 
 
 
 <body>
 
-
-
-<!--Setup the overall structure of the website-->
 <div class = "container">
-    <div id="header" class="header">
-        <h1>Visualizing the Head of Household Survey</h1>
-            <div id="nav">
-                <!--<ul>-->
-                    <!--<li><a href="">Home</a></li>-->
-                    <!--<li><a href="">About</a></li>-->
-                    <!--<li><a href="">Author</a></li>-->
-                <!--</ul>-->
-                <h4>Choose a set of questions and visualize how they are connected through time</h4>
-            </div>
-    </div>
-
-
-
-
-    <div  id = "sankey_dash" class="sankey_dash">
-
-        <form action="#" method="post" id="drop_down" class= "drop_down" >
-
-                <select name = "drop_down1" id = "drop_down1" >
-                    <option value= "no_option">Selection</option>
-                    <option value= "REGION" >Region</option>
-                    <option value= "SEX">Gender</option>
-                    <option value= "AGE_GRP">Age Group</option>
-                    <option value= "EDUC" selected>Education</option>
-                    <option value= "FIHHYR2">Income</option>
-                    <option value= "JBSTAT">Working status</option>
-                    <option value= "MASTAT">Martial Status</option>
-                    <option value= "TENURE">Housing Tenure</option>
-                    <option value= "US">Owe money?</option>
-                    <option value= "SAVING11">Change in Savings</option>
-                    <option value= "USN"># of unsecured debt?</option>
-                    <option value= "USA">-Hire Purchase</option>
-                    <option value= "USB">-Personal Loan</option>
-                    <option value= "USC">-Credit Card</option>
-                    <option value= "USD">-Mail order purchase</option>
-                    <option value= "USE">-DSS social fund loan</option>
-                    <option value= "USG">-Something else</option>
-                    <option value= "USH">-Overdraft</option>
-                    <option value= "USI">-Student Loan</option>
-                    <option value= "USJ">-Store Card</option>
-                    <option value= "BILLSCC">Keeping up with bills?</option>
-                    <option value= "XPHDR1">-Lack of cash flow</option>
-                    <option value= "XPHDR2">-Overspending</option>
-                    <option value= "XPHDR3">-Reduction in overtime</option>
-                    <option value= "XPHDR4">-Has a child</option>
-                    <option value= "XPHDR5">-Redundancy</option>
-                    <option value= "XPHDR6">-Unemployment</option>
-                    <option value= "XPHDR8">-Illness</option>
-                    <option value= "XPHDR9">-Credit card offers</option>
-                    <option value= "XPHDR10">-School fees</option>
-                    <option value= "XPHDR11">-Household Bills</option>
-                    <option value= "XPHDR12">-Student debt legacy</option>
-                    <option value= "XPHDR13">-Other</option>
-                    <option value= "XPHDR14">-High interest rates</option>
-                    <option value= "XPHDR15">-Reduction in benefits</option>
-                    <option value= "XPHDD1">Possible Solutions</option>
-                    <option value= "XPHDD1">-Take out another loan</option>
-                    <option value= "XPHDD2">-Take out another mortgage</option>
-                    <option value= "XPHDD3">-Sell house</option>
-                    <option value= "XPHDD4">-Declare bankruptcy</option>
-                    <option value= "XPHDD5">-Another debt solution</option>
-                    <option value= "XPHDD6">-Cut spending</option>
-                    <option value= "XPHDD7">-Using savings</option>
-                    <option value= "XPHDD8">-Other</option>
-                    <option value= "XPHDD9">-No action</option>
-                    <option value= "XPHDD10">-Work longer</option>
-                    <option value= "XPHDD11">-Get help from family</option>
-                    <option value= "XPHDD12">-Contact collector</option>
-                    <option value= "XPHDD13">-Pay bills off quickly</option>
-                    <option value= "XPHDD14">-Debt Crisis Help</option>
-                    <option value= "HSCRCHG">Ability to borrow money?</option>
-                    <option value= "NVESTTOT">Amount in savings?</option>
-
-                </select>
-
-            <select name = "drop_down2" id = "drop_down2" >
-                <option value= "no_option">Selection</option>
-                <option value= "REGION">Region</option>
-                <option value= "SEX">Gender</option>
-                <option value= "AGE_GRP">Age Group</option>
-                <option value= "EDUC">Education</option>
-                <option value= "FIHHYR2">Income</option>
-                <option value= "JBSTAT" selected>Working status</option>
-                <option value= "MASTAT">Martial Status</option>
-                <option value= "TENURE">Housing Tenure</option>
-                <option value= "SAVING11">Change in Savings</option>
-                <option value= "US">Owe money?</option>
-                <option value= "USN">Unsecured debt</option>
-                <option value= "USA">-Hire Purchase</option>
-                <option value= "USB">-Personal Loan</option>
-                <option value= "USC">-Credit Card</option>
-                <option value= "USD">-Mail order purchase</option>
-                <option value= "USE">-DSS social fund loan</option>
-                <option value= "USG">-Something else</option>
-                <option value= "USH">-Overdraft</option>
-                <option value= "USI">-Student Loan</option>
-                <option value= "USJ">-Store Card</option>
-                <option value= "BILLSCC" selected >Keeping up with bills?</option>
-                <option value= "XPHDR1">-Lack of cash flow</option>
-                <option value= "XPHDR2">-Overspending</option>
-                <option value= "XPHDR3">-Reduction in overtime</option>
-                <option value= "XPHDR4">-Has a child</option>
-                <option value= "XPHDR5">-Redundancy</option>
-                <option value= "XPHDR6">-Unemployment</option>
-                <option value= "XPHDR8">-Illness</option>
-                <option value= "XPHDR9">-Credit card offers</option>
-                <option value= "XPHDR10">-School fees</option>
-                <option value= "XPHDR11">-Household Bills</option>
-                <option value= "XPHDR12">-Student debt legacy</option>
-                <option value= "XPHDR13">-Other</option>
-                <option value= "XPHDR14">-High interest rates</option>
-                <option value= "XPHDR15">-Reduction in benefits</option>
-                <option value= "XPHDD1">Possible Solutions</option>
-                <option value= "XPHDD1">-Take out another loan</option>
-                <option value= "XPHDD2">-Take out another mortgage</option>
-                <option value= "XPHDD3">-Sell house</option>
-                <option value= "XPHDD4">-Declare bankruptcy</option>
-                <option value= "XPHDD5">-Another debt solution</option>
-                <option value= "XPHDD6">-Cut spending</option>
-                <option value= "XPHDD7">-Using savings</option>
-                <option value= "XPHDD8">-Other</option>
-                <option value= "XPHDD9">-No action</option>
-                <option value= "XPHDD10">-Work longer</option>
-                <option value= "XPHDD11">-Get help from family</option>
-                <option value= "XPHDD12">-Contact collector</option>
-                <option value= "XPHDD13">-Pay bills off quickly</option>
-                <option value= "XPHDD14">-Debt Crisis Help</option>
-            <option value= "HSCRCHG">Ability to borrow money?</option>
-                <option value= "NVESTTOT">Amount in savings?</option>
-
-
-            </select>
-            <select name = "drop_down3" id = "drop_down3" >
-                <option value= "no_option">Selection</option>
-                <option value= "REGION">Region</option>
-                <option value= "SEX">Gender</option>
-                <option value= "AGE_GRP">Age Group</option>
-                <option value= "EDUC">Education</option>
-                <option value= "FIHHYR2">Income</option>
-                <option value= "JBSTAT">Working status</option>
-                <option value= "MASTAT">Martial Status</option>
-                <option value= "TENURE">Housing Tenure</option>
-                <option value= "SAVING11">Change in Savings</option>
-                <option value= "US">Owe money?</option>
-                <option value= "USN">Unsecured debt</option>
-                <option value= "USA">-Hire Purchase</option>
-                <option value= "USB">-Personal Loan</option>
-                <option value= "USC">-Credit Card</option>
-                <option value= "USD">-Mail order purchase</option>
-                <option value= "USE">-DSS social fund loan</option>
-                <option value= "USG">-Something else</option>
-                <option value= "USH">-Overdraft</option>
-                <option value= "USI">-Student Loan</option>
-                <option value= "USJ">-Store Card</option>
-                <option value= "BILLSCC">Keeping up with bills?</option>
-                <option value= "XPHDR1">-Lack of cash flow</option>
-                <option value= "XPHDR2">-Overspending</option>
-                <option value= "XPHDR3">-Reduction in overtime</option>
-                <option value= "XPHDR4">-Has a child</option>
-                <option value= "XPHDR5">-Redundancy</option>
-                <option value= "XPHDR6">-Unemployment</option>
-                <option value= "XPHDR8">-Illness</option>
-                <option value= "XPHDR9">-Credit card offers</option>
-                <option value= "XPHDR10">-School fees</option>
-                <option value= "XPHDR11">-Household Bills</option>
-                <option value= "XPHDR12">-Student debt legacy</option>
-                <option value= "XPHDR13">-Other</option>
-                <option value= "XPHDR14">-High interest rates</option>
-                <option value= "XPHDR15">-Reduction in benefits</option>
-                <option value= "XPHDD1">Possible Solutions</option>
-                <option value= "XPHDD1">-Take out another loan</option>
-                <option value= "XPHDD2">-Take out another mortgage</option>
-                <option value= "XPHDD3">-Sell house</option>
-                <option value= "XPHDD4">-Declare bankruptcy</option>
-                <option value= "XPHDD5">-Another debt solution</option>
-                <option value= "XPHDD6">-Cut spending</option>
-                <option value= "XPHDD7">-Using savings</option>
-                <option value= "XPHDD8">-Other</option>
-                <option value= "XPHDD9">-No action</option>
-                <option value= "XPHDD10">-Work longer</option>
-                <option value= "XPHDD11">-Get help from family</option>
-                <option value= "XPHDD12">-Contact collector</option>
-                <option value= "XPHDD13">-Pay bills off quickly</option>
-                <option value= "XPHDD14">-Debt Crisis Help</option>
-            <option value= "HSCRCHG">Ability to borrow money?</option>
-                <option value= "NVESTTOT">Amount in savings?</option>
-
-
-            </select>
-                <select name = "drop_down4" id = "drop_down4" >
-                <option value= "no_option">Selection</option>
-                <option value= "REGION">Region</option>
-                <option value= "SEX">Gender</option>
-                <option value= "AGE_GRP">Age Group</option>
-                <option value= "EDUC">Education</option>
-                <option value= "FIHHYR2">Income</option>
-                <option value= "JBSTAT">Working status</option>
-                <option value= "MASTAT">Martial Status</option>
-                <option value= "TENURE">Housing Tenure</option>
-                <option value= "SAVING11">Change in Savings</option>
-                <option value= "US">Owe money?</option>
-                <option value= "USN">Unsecured debt</option>
-                <option value= "USA">-Hire Purchase</option>
-                <option value= "USB">-Personal Loan</option>
-                <option value= "USC">-Credit Card</option>
-                <option value= "USD">-Mail order purchase</option>
-                <option value= "USE">-DSS social fund loan</option>
-                <option value= "USG">-Something else</option>
-                <option value= "USH">-Overdraft</option>
-                <option value= "USI">-Student Loan</option>
-                <option value= "USJ">-Store Card</option>
-                <option value= "BILLSCC">Keeping up with bills?</option>
-                    <option value= "XPHDR1">-Lack of cash flow</option>
-                    <option value= "XPHDR2">-Overspending</option>
-                    <option value= "XPHDR3">-Reduction in overtime</option>
-                    <option value= "XPHDR4">-Has a child</option>
-                    <option value= "XPHDR5">-Redundancy</option>
-                    <option value= "XPHDR6">-Unemployment</option>
-                    <option value= "XPHDR8">-Illness</option>
-                    <option value= "XPHDR9">-Credit card offers</option>
-                    <option value= "XPHDR10">-School fees</option>
-                    <option value= "XPHDR11">-Household Bills</option>
-                    <option value= "XPHDR12">-Student debt legacy</option>
-                    <option value= "XPHDR13">-Other</option>
-                    <option value= "XPHDR14">-High interest rates</option>
-                    <option value= "XPHDR15">-Reduction in benefits</option>
-                    <option value= "XPHDD1">Possible Solutions</option>
-                    <option value= "XPHDD1">-Take out another loan</option>
-                    <option value= "XPHDD2">-Take out another mortgage</option>
-                    <option value= "XPHDD3">-Sell house</option>
-                    <option value= "XPHDD4">-Declare bankruptcy</option>
-                    <option value= "XPHDD5">-Another debt solution</option>
-                    <option value= "XPHDD6">-Cut spending</option>
-                    <option value= "XPHDD7">-Using savings</option>
-                    <option value= "XPHDD8">-Other</option>
-                    <option value= "XPHDD9">-No action</option>
-                    <option value= "XPHDD10">-Work longer</option>
-                    <option value= "XPHDD11">-Get help from family</option>
-                    <option value= "XPHDD12">-Contact collector</option>
-                    <option value= "XPHDD13">-Pay bills off quickly</option>
-                    <option value= "XPHDD14">-Debt Crisis Help</option>
-                    <option value= "HSCRCHG">Ability to borrow money?</option>
-                    <option value= "NVESTTOT">Amount in savings?</option>
-
-
-                </select>
-
-
-        </form>
-
-    </div>
-
-<p></p>
-
-
-
-
-
-
-
-
-        <div>
-        <label>
-            <p>
-
-                <a href="#" ID ="button" class="myButton">Visualize</a>
-            </p>
-            </label>
+    <div class = "row">
+        <div class = "header text-center">
+            <h1>MPAID Locator</h1>
         </div>
 
-    <div>
-        </label>
-            <label id="slider">
-                <text id="selected_year">Selected Year</text>
-
-                <input style="float:left" type="range" name="slider-time" min="2004" max="2011" step="1" value="0" id="slider-time" oninput=";" ondblclick="">
-                <text id="max_date" style="float:left">2004</text>
-                <text id="max_date" style="float:right">2011</text>
-            </label>
+        <div id="geocode_panel" class = "text-center">
+            <input id="address" type="textbox" value="Cambridge, MA US">
+            <input type="button" value="Geocode" onclick="codeAddress()">
         </div>
 
-    <div id="titles1" class = "titles">
+        <div id = "directions" class = "text-center">
+            <h3>Click on Classmate</h3>
+        </div>
 
+        <div id="panel" class = "text-center">
+            <b>Mode of Travel: </b>
+            <select id="mode" onchange="calcRoute();">
+                <option value="no_selection">Selection</option>
+                <option value="DRIVING">Driving</option>
+                <option value="WALKING">Walking</option>
+                <option value="BICYCLING">Bicycling</option>
+                <option value="TRANSIT">Transit</option>
+            </select>
+
+        </div>
+
+
+
+
+        <div id = "map-canvas" class ="map-canvas col-md-6">
+
+
+        </div>
+        <!--<div id = "panel"></div>-->
     </div>
-    <div id="titles2" class = "titles">
-
-    </div>
-    <div id="titles3" class = "titles">
-
-    </div>
-
-    <div id="loading">
-        <img src="css/ajax-loader.gif" alt="Loading..." />
-    </div>
-
-
-    <div  id = "sankey" class="sankey">
-
-    </div>
-
-    <div  id = "footer" class = "footer" >
-        <p style="text-align: center">Developed by Nick Stellitano</p>
-        <p style="text-align: center">The data utilized is from the Bank of England Household Survey from 2004 through 2011 (Face to Face).  Throughout the years some data was either not asked for or the
-            answer was not known.  The applicable diagrams are labeled accordingly.</p>
-    </div>
-
-
 </div>
 
 
 
-
 <script>
-$(function() {
-
-
-   // d3.select.("#country_list").write("test");
-    //Create EventHandler
-    var MyEventHandler = new Object();
-    sank = new sankey_chart(d3.select("#sankey"))
-    document.getElementById("selected_year").innerHTML = String(2008)
-    document.getElementById("slider-time").value = 2008
-
-
-    var _2004, _2005, _2006, _2007, _2008, _2009, _2010, _2011, _2012, _2013
-    var sankey_2004, sankey_2005, sankey_2006, sankey_2005, sankey_2007, sankey_2008, sankey_2009, sankey_2010, sankey_2011
-
-
-    //------------Load the Data and begin-------------------------------------------------------------------------------------------------------------------------------
-    //-------------------------------------------------------------------------------------------------------------------------------------------------
-
-    queue()
-            .defer(d3.csv, "data/2004_HH.csv")
-            .defer(d3.csv, "data/2005_HH.csv")
-            .defer(d3.csv, "data/2006_HH.csv")
-            .defer(d3.csv, "data/2007_HH.csv")
-            .defer(d3.csv, "data/2008_HH.csv")
-            .defer(d3.csv, "data/2009_HH.csv")
-            .defer(d3.csv, "data/2010_HH.csv")
-            .defer(d3.csv, "data/2011_HH.csv")
-            .await(ready)
-    //Ready function takes the data files loaded via the queue function and begins with loading the WorldMap
-
-
-    function ready(error, d_2004, d_2005, d_2006, d_2007, d_2008, d_2009, d_2010, d_2011) {
-        _2004 = d_2004;
-        _2005 = d_2005;
-        _2006 = d_2006;
-        _2007 = d_2007;
-        _2008 = d_2008;
-        _2009 = d_2009;
-        _2010 = d_2010;
-        _2011 = d_2011;
-
-
-
-
-
-
-//
-       $("#button").click(function(){
-           update();
-       });
-
-
-           function update() {
-
-               var year = document.getElementById("slider-time").value
-               var year = document.getElementById("selected_year").innerHTML = String(year)
-
-
-           var selection = [], selection1, selection2, selection3, selection4;
-           var question_num = []
-           var selection_1 = 0, selection_2 = 0, selection_3 = 0, selection_4 = 0;
-
-
-            selection1 = getSelectedOptions(document.getElementById("drop_down1"))
-            selection2 = getSelectedOptions(document.getElementById("drop_down2"))
-            selection3 = getSelectedOptions(document.getElementById("drop_down3"))
-            selection4 = getSelectedOptions(document.getElementById("drop_down4"))
-//            selection5 = getSelectedOptions(document.getElementById("drop_down5"))
-
-
-
-           for(i=0; i<5; i++){
-               if(i==0){
-                   selection.push(selection1[0].value)
-               }else if(i==1&& selection2[0].value != "no_option"){
-                   var check = 0;
-                   for(z=0; z<selection.length; z++){
-                       if(selection2[0].value == selection[z]){check++}
-                   }
-                   if(check == 0){ selection.push(selection2[0].value)}
-               }else if(i ==2 && selection3[0].value != "no_option" ){
-                   var check = 0;
-                   for(z=0; z<selection.length; z++){
-                       if(selection3[0].value == selection[z]){check++}
-                   }
-                   if(check == 0){ selection.push(selection3[0].value)}
-               }else if(i ==3 && selection4[0].value != "no_option"){
-                   var check = 0;
-                   for(z=0; z<selection.length; z++){
-                       if(selection4[0].value == selection[z]){check++}
-                   }
-                   if(check == 0){ selection.push(selection4[0].value)}
-               }
-           }
-
-
-           //for(cycle=0; cycle< 1; cycle++) {
-
-               if (year == 2004) {
-                   survey = _2004
-               }
-               if (year == 2005) {
-                   survey = _2005
-               }
-               if (year == 2006) {
-                   survey = _2006
-               }
-               if (year == 2007) {
-                   survey = _2007
-               }
-               if (year == 2008) {
-                   survey = _2008
-               }
-               if (year == 2009) {
-                   survey = _2009
-               }
-               if (year == 2010) {
-                   survey = _2010
-               }
-               if (year == 2011) {
-                   survey = _2011
-               }
-
-               question_num = [];
-
-
-               for (i = 0; i < selection.length; i++) {
-                   if (i == 0) {
-                       selection_1 = selection[i];
-                       for (ii = 1; ii < 200; ii++) {
-                           if (survey[0][ii] == selection[i]) {
-                               question_num.push(ii)
-                           }
-                       }
-                   }
-                   if (i == 1) {
-                       selection_2 = selection[i];
-                       for (z = 1; z < 200; z++) {
-                           if (survey[0][z] == selection[i]) {
-                               question_num.push(z)
-                           }
-                       }
-                   }
-                   if (i == 2) {
-                       selection_3 = selection[i];
-                       for (z = 1; z < 200; z++) {
-                           if (survey[0][z] == selection[i]) {
-                               question_num.push(z)
-                           }
-                       }
-                   }
-                   if (i == 3) {
-                       selection_4 = selection[i];
-                       for (z = 1; z < 200; z++) {
-                           if (survey[0][z] == selection[i]) {
-                               question_num.push(z)
-                           }
-                       }
-                   }
-               }
-
-
-
-
-
-
-               var sankey_info = {
-                   "nodes": [],
-                   "links": []
-               }
-
-
-               var question = [
-                   {"name": "REGION",
-                       "Description": "REGION",
-                       "answers": ["EAST ANGLIA", "EAST MIDLANDS", "GREATER LONDON", "NORTH", "NORTH WEST",
-                           "SCOTLAND", "SOUTH EAST","SOUTH WEST",  "WEST MIDLANDS", "WALES", "YORKSHIRE AND HUMBERSIDE"]},
-
-                   {"name": "SEX",
-                       "Description": "Gender", "answers": ["MALE", "FEMALE"]},
-
-                   {"name": "JBSTAT",
-                       "Description": "Working Status",
-                       "answers": ["SELF EMPLOYED", "IN PAID EMPLOYMENT", "UNEMPLOYED", "RETIRED",
-                           "FULL TIME STUDENT", "NOT ABLE TO WORK", "SOMETHING ELSE"]},
-                   {
-                       "name": "AGE_GRP",
-                       "Description": "Age Groups",
-                       "answers": ["18 to 24", "25 to 34", "35 to 44", "45 to 54", "55 to 64", "65 and over"]
-                   },
-                   {
-                       "name": "EDUC",
-                       "Description": "Education Level",
-                       "answers": ["NO FORMAL QUALIFICATIONS", "BACHELOR DEGREE OR EQUIVALENT (=NVQ4)", "VOCATIONAL QUALIFICATIONS",
-                           "A LEVEL", "GCSE/O to LEVEL/CSE", "OTHER", "MASTERS/PHD OR EQUIVALENT", "STILL STUDYING"]
-                   },
-                   {
-                       "name": "FIHHYR2",
-                       "Description": "Income",
-                       "answers": ["less than 4500", "4500 to 6499", "6500 to 7499", "7500 to 9499", "9500 to 11499", "11500 to 13499" ,"13500 to 15499",
-                           "15500 to 17499", "17500 to 24999", "25000 to 29999", "30000 to 39999", "40000 to 49999", "50000 to 74999", "75000 to 99999",
-                           "greater than or equal to 100,000", "DO NOT KNOW", "REFUSED", "NOT APPLICABLE"]
-                   },
-                   {
-                       "name": "MASTAT",
-                       "Description": "Martial Status",
-                       "answers": ["MARRIED OR COUPLE", "WIDOWED/DIVORCED/SEPARATED", "NEVER MARRIED", "REFUSED"]
-                   },
-                   {
-                       "name": "TENURE",
-                       "Description": "Housing TENURE",
-                       "answers": ["OWNED OUTRIGHT", "OWNED MORTGAGE", "LOCAL AUTHORITY RENTED",
-                           "PRIVATE RENTED", "OTHER", "REFUSED" ]},
-                   {
-                       "name": "SAVING11",
-                       "Description": "The change in savings over the next year",
-                       "answers": ["DECREASE BY 300 OR MORE A MONTH", "DECREASE BY 200 TO 299 A MONTH", "DECREASE BY 150 TO 199 A MONTH",
-                           "DECREASE BY 100 TO 149 A MONTH","DECREASE BY 50 TO 99 A MONTH","DECREASE BY LESS THAN 50 A MONTH",
-                           "DECREASE BY LESS THAN 50 A MONTH", "INCREASE BY 50 TO 99 A MONTH",
-                           "INCREASE BY 100 TO 149 A MONTH", "INCREASE BY 150 TO 199 A MONTH","INCREASE BY 200 TO 299 A MONTH", "INCREASE BY 300 OR MORE A MONTH",
-                           "DO NOT KNOW", "DO NOT PLAN TO CHANGE MY MONTHLY SAVINGS" ]},
-                   {
-                       "name": "US",
-                       "Description": "Do you owe money or credit agreement",
-                       "answers": ["YES", "NO", "DO NOT KNOW", "REFUSED" ]},
-                   {
-                       "name": "USN",
-                       "Description": "Number of unsecured debt instruments held",
-                       "answers": ["0", "1", "2", "3", "4","5", "6", "7", "DO NOT KNOW", "REFUSED" ]},
-                   {
-                       "name": "USA",
-                       "Description": "Unsecured debt instrument: hire purchase",
-                       "answers": ["YES", "NO", "DO NOT KNOW", "REFUSED" ]},
-                   {
-                       "name": "USB",
-                       "Description": "Unsecured debt instrument: personal loan",
-                       "answers": ["YES", "NO", "DO NOT KNOW", "REFUSED" ]},
-                   {
-                       "name": "USC",
-                       "Description": "Unsecured debt instrument: credit card",
-                       "answers": ["YES", "NO", "DO NOT KNOW", "REFUSED" ]},
-                   {
-                       "name": "USD",
-                       "Description": "Unsecured debt instrument: mail order purchase",
-                       "answers": ["YES", "NO", "DO NOT KNOW", "REFUSED" ]},
-                   {
-                       "name": "USE",
-                       "Description": "Unsecured debt instrument: DSS Social Fund loan",
-                       "answers": ["YES", "NO", "DO NOT KNOW", "REFUSED" ]},
-                   {
-                       "name": "USG",
-                       "Description": "Unsecured debt instrument: something else",
-                       "answers": ["YES", "NO", "DO NOT KNOW", "REFUSED" ]},
-                   {
-                       "name": "USH",
-                       "Description": "Unsecured debt instrument: overdraft",
-                       "answers": ["YES", "NO", "DO NOT KNOW", "REFUSED" ]},
-                   {
-                       "name": "USI",
-                       "Description": "Unsecured debt instrument: student loan",
-                       "answers": ["YES", "NO", "DO NOT KNOW", "REFUSED" ]},
-                   {
-                       "name": "USJ",
-                       "Description": "Unsecured debt instrument: store card",
-                       "answers": ["YES", "NO", "DO NOT KNOW", "REFUSED" ]},
-
-                   {
-                       "name": "BILLSCC",
-                       "Description": "How are you keeping up with your bills?",
-                       "answers": ["FALLEN BEHIND ON SOME", "HAVE FINANCIAL PROBLEMS FALLEN BEHIND WITH MANY","KEEPING UP CONSTANT STRUGGLE",
-                           "KEEPING UP STRUGGLE FROM TIME TO TIME", "KEEPING UP WITHOUT MUCH DIFFICULTY", "DO NOT KNOW", "REFUSED" ]},
-
-                   {
-                       "name": "XPHDR1",
-                       "Description": "Lack of cash flow",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-
-                   {
-                       "name": "XPHDR2",
-                       "Description": "Overspending",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-
-                   {
-                       "name": "XPHDR3",
-                       "Description": "Reduction in overtime",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-
-                   {
-                       "name": "XPHDR4",
-                       "Description": "Has a child",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-
-                   {
-                       "name": "XPHDR5",
-                       "Description": "Redundancy",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-
-                   {
-                       "name": "XPHDR6",
-                       "Description": "Unemployment",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-
-                   {
-                       "name": "XPHDR7",
-                       "Description": "Illness",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-
-                   {
-                       "name": "XPHDR8",
-                       "Description": "Divorce/Separation",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-
-                   {
-                       "name": "XPHDR9",
-                       "Description": "Credit Card offers",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-
-                   {
-                       "name": "XPHDR10",
-                       "Description": "School costs",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-
-                   {
-                       "name": "XPHDR11",
-                       "Description": "Household Bills",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-
-                   {
-                       "name": "XPHDR12",
-                       "Description": "Student debt legacy",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-
-                   {
-                       "name": "XPHDR13",
-                       "Description": "Other",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-
-                   {
-                       "name": "XPHDR14",
-                       "Description": "High interest rates",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-
-                   {
-                       "name": "XPHDR15",
-                       "Description": "Redutiton in benefits",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-                   {
-                       "name": "XPHDD1",
-                       "Description": "Take out another loan",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-                   {
-                       "name": "XPHDD2",
-                       "Description": "Take out another mortgage",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-                   {
-                       "name": "XPHDD3",
-                       "Description": "Selling house",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-                   {
-                       "name": "XPHDD4",
-                       "Description": "Declare bankruptcy",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-                   {
-                       "name": "XPHDD5",
-                       "Description": "Enter another debt solution",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-                   {
-                       "name": "XPHDD6",
-                       "Description": "Cut spending",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-                   {
-                       "name": "XPHDD7",
-                       "Description": "Using savings",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-                   {
-                       "name": "XPHDD8",
-                       "Description": "Other",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-                   {
-                       "name": "XPHDD9",
-                       "Description": "No action",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-                   {
-                       "name": "XPHDD10",
-                       "Description": "Work longer hours",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-                   {
-                       "name": "XPHDD11",
-                       "Description": "Get help from relatives",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-                   {
-                       "name": "XPHDD12",
-                       "Description": "Contacting collector",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-                   {
-                       "name": "XPHDD13",
-                       "Description": "Paying off bills quickly",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-                   {
-                       "name": "XPHDD13",
-                       "Description": "Visit Citizens Advice Bureau",
-                       "answers": ["YES", "NO", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-                   {
-                       "name": "HSCRCHG",
-                       "Description": "Easier or harder to borrow",
-                       "answers": ["EASIER", "HARDER", "THE SAME","DO NOT KNOW", "NOT APPLICABLE", "QUESTION NOT OFFERED" ]},
-                   {
-                       "name": "NVESTTOT",
-                       "Description": "How much do you have in savings",
-                       "answers": ["LESS THAN 500","500 to 999", "1000 to 1999", "3000 to 3999", "4000 to 4999", "5000 to 5999", "6000 to 6999","7000 to 7999",
-                           "8000 to 8999", "9000 to 9999", "10000 to 12499", "15000 to 17499", "17500 to 19999", "20000 to 24999", "25000 to 29999", "30000 to 34999",
-                           "35000 to 39999", "40000 to 44999", "45000 to 49999", "50000 to 74999", "75000 to 99999", "100000 to 149999",
-                           "GREATER THAN OR EQUAL TO 150000", "THE SAME","NOT APPLICABLE", "DO NOT KNOW", "REFUSED"]}
-
-
-               ];
-
-               //clear current list
-               document.getElementById('titles1').innerHTML = ("");
-
-               var previousInnerHTML = new String();
-
-               //previousInnerHTML = document.getElementById('titles').innerHTML;
-
-
-
-
-
-
-
-
-
-
-
-
-               var counter = 0;
-               var seperater = 0;
-               for (i = 0; i < question.length; i++) {
-                   if (selection_1 == question[i].name) {
-                       previousInnerHTML = previousInnerHTML.concat("<text style='text-align:left; font-size: 20px'>" + question[i].Description + "</text>")
-                       for (z = 0; z < question[i].answers.length; z++) {
-
-                           sankey_info.nodes.push({
-                               "id": 1,
-                               "name": question[i].answers[z] ,
-                               "description": question[i].Description
-                           })
-                           counter++;
-
-                       }
-                   }
-               }
-
-               var place_holder = counter;
-               var name;
-               var link1=0, link2=0, link3=0
-               for (i = 0; i < question.length; i++) {
-                   if (selection_2 == question[i].name) { //replace with values from drop down menus
-
-                       if(selection3[0].value=="no_option"){ previousInnerHTML = previousInnerHTML.concat("<text style='text-align: right ; font-size: 20px'>" + question[i].Description + "</text>")}
-                       else if(selection4[0].value=="no_option"){previousInnerHTML = previousInnerHTML.concat("<text style='text-align:center; font-size: 20px'>" + question[i].Description + "</text>")}
-                       else {name = question[i].Description}
-                       for (z = 0; z < question[i].answers.length; z++) {
-                           sankey_info.nodes.push({
-                               "id": 1,
-                               "name": question[i].answers[z],
-                               "description": question[i].Description
-                           })
-                           counter++
-
-
-
-                           for (h = 0; h < place_holder; h++) {
-                               sankey_info.links.push({
-                                   "id": 1,
-                                   "source": sankey_info.nodes[h].name,
-                                   "target": question[i].answers[z],
-                                   "value": 0
-                               })
-                               link1++;
-
-                           }
-                       }
-                   }
-               }
-
-               seperator = place_holder;
-               place_holder = counter;
-               for (i = 0; i < question.length; i++) {
-                   if (selection_3 == question[i].name) { //replace with values from drop down menus
-                       if(selection4[0].value=="no_option"){ previousInnerHTML = previousInnerHTML.concat("<text style='text-align: right ; font-size: 20px'>" + question[i].Description + "</text>")}
-                       else {previousInnerHTML = previousInnerHTML.concat("<text style='text-align:center; font-size: 20px'>" + name + "  " +  question[i].Description + "</text>")}
-                       for (z = 0; z < question[i].answers.length; z++) {
-                           sankey_info.nodes.push({
-                               "id": 1,
-                               "name": question[i].answers[z] ,
-                               "description": question[i].Description
-                           })
-                           counter++;
-
-
-
-
-                           for (h = seperator; h < place_holder; h++) {
-                               sankey_info.links.push({
-                                   "id": 1,
-                                   "source": sankey_info.nodes[h].name,
-                                   "target": question[i].answers[z],
-                                   "value": 0
-                               });
-                               link2++;
-
-                           }
-                       }
-                   }
-               }
-
-               seperator = place_holder;
-               place_holder = counter;
-               for (i = 0; i < question.length; i++) {
-                   if (selection_4 == question[i].name) { //replace with values from drop down menus
-                       previousInnerHTML = previousInnerHTML.concat("<text style='text-align: right; font-size: 20px'>" + question[i].Description + "</text>")
-                       for (z = 0; z < question[i].answers.length; z++) {
-                           sankey_info.nodes.push({
-                               "id": 1,
-                               "name": question[i].answers[z],
-                               "description": question[i].Description
-                           })
-                           counter++;
-
-
-
-                           for (h = seperator; h < place_holder; h++) {
-                               sankey_info.links.push({
-                                   "id": 1,
-                                   "source": sankey_info.nodes[h].name,
-                                   "target": question[i].answers[z],
-                                   "value": 0
-                               });
-                               link3++;
-
-                           }
-                       }
-                   }
-               }
-
-
-
-              // document.getElementById('titles').innerHTML = previousInnerHTML;
-
-               for (i = 0; i < sankey_info.links.length; i++) {
-                   var source = sankey_info.links[i].source
-                   var target = sankey_info.links[i].target
-                   var total_weight = 0;
-
-                   for (z = 0; z < survey.length; z++) {
-                       if (survey[z][question_num[0]] == source && survey[z][question_num[1]] == target) {
-                           total_weight = total_weight + parseInt(survey[z][2]);
-                           sankey_info.links[i].value = total_weight
-                       }
-                   }
-
-
-                   for (z = 0; z < survey.length; z++) {
-                       if (survey[z][question_num[1]] == source && survey[z][question_num[2]] == target) {
-                           total_weight = total_weight + parseInt(survey[z][2]);
-                           sankey_info.links[i].value = total_weight
-                       }
-                   }
-
-
-                   for (z = 0; z < survey.length; z++) {
-                       if (survey[z][question_num[2]] == source && survey[z][question_num[3]] == target) {
-                           total_weight = total_weight + parseInt(survey[z][2]);
-                           sankey_info.links[i].value = total_weight
-                       }
-                   }
-
-
-                   for (z = 0; z < survey.length; z++) {
-                       if (survey[z][question_num[3]] == source && survey[z][question_num[4]] == target) {
-                           total_weight = total_weight + parseInt(survey[z][2]);
-                           sankey_info.links[i].value = total_weight
-                       }
-
-                   }
-
-
-               }
-
-
-
-               console.log(sankey_info.nodes)
-
-               var count
-               for(ii=0; ii<sankey_info.nodes.length; ii++) {
-                   count = [];
-                   var names = sankey_info.nodes[ii].name;
-
-                   for (zz = 0; zz < sankey_info.nodes.length; zz++) {
-                       if (names == sankey_info.nodes[zz].name && ii != zz) {
-                           count.push(zz)
-                           console.log(names)
-
-
-                       }
-                   }
-console.log(count.length)
-
-                   if(count.length ==  3){
-
-
-                       for(z=0; z< link1; z++){
-
-                           sankey_info.links[z].source = sankey_info.nodes[ii].name + "   "
-                           sankey_info.links[z].target = sankey_info.nodes[ii].name + "  "
-
-                       }
-                       for(z=link1; z< link1+link2; z++){
-                           sankey_info.links[z].source = sankey_info.nodes[ii].name + "  "
-                           sankey_info.links[z].target = sankey_info.nodes[ii].name + " "
-
-                       }
-                       for(z=link1+link2; z< link1+link2+link3; z++){
-                           sankey_info.links[z].source = sankey_info.nodes[ii].name + " "
-                           sankey_info.links[z].target = sankey_info.nodes[ii].name
-
-                       }
-
-                       sankey_info.nodes[ii].name = sankey_info.nodes[ii].name + "   "
-                       sankey_info.nodes[count[0]].name = names + "  "
-                       sankey_info.nodes[count[1]].name = names + " "
-                       sankey_info.nodes[count[2]].name = names
-
-                   }
-                       if(count.length ==  2){
-                           var check1 =0;
-                           var check2 = 0;
-
-
-
-                           for(z=0; z< link1; z++){
-                               if(sankey_info.links[z].source == names){sankey_info.links[z].source = sankey_info.nodes[ii].name + "   "; check1=1}
-
-                           }
-                           for(z=0; z< link1; z++){
-                               if(sankey_info.links[z].target == names){sankey_info.links[z].target = sankey_info.nodes[ii].name + "  "; check2 =2}
-
-                           }
-
-
-
-                           if(check1==1 && check2==2){
-
-                               for(z=link1; z< link2 +link1; z++){
-                                   if(sankey_info.links[z].source == names){sankey_info.links[z].source = sankey_info.nodes[ii].name + "  "; check1=3}}
-
-                               for(z=link1; z< link2 +link1; z++){
-                                       if(sankey_info.links[z].target == names){sankey_info.links[z].target = sankey_info.nodes[ii].name + " "; check2=4}
-
-                               }
-                           }
-
-                           if(check1==3 && check2==4){
-                               for(z=link1+link2; z< link2 +link1+link3; z++){
-                                   if(sankey_info.links[z].source == names){sankey_info.links[z].source = sankey_info.nodes[ii].name + " ";}
-                               }
-
-                           }
-
-                               if(check1==3 && check2!=4){
-                                   for(z=link1+link2; z< link2 +link1+link3; z++){
-                                       if(sankey_info.links[z].target == names){sankey_info.links[z].target = sankey_info.nodes[ii].name + " ";}
-                                   }
-
-                               }
-
-                               if(check1==1 && check2!=2){
-
-                                       for(z=link1; z< link2 +link1; z++){
-                                           if(sankey_info.links[z].target == names){sankey_info.links[z].target = sankey_info.nodes[ii].name + "  ";}
-
-                                       }
-                                   for(z=link1+link2; z< link2 +link1+link3; z++){
-                                       if(sankey_info.links[z].source == names){sankey_info.links[z].source = sankey_info.nodes[ii].name + "  ";}
-                                   }
-                                   for(z=link1+link2; z< link2 +link1+link3; z++){
-                                       if(sankey_info.links[z].target == names){sankey_info.links[z].target = sankey_info.nodes[ii].name + " ";}
-                                   }
-                                   }
-
-                               if(check1!=1 && check2==2){
-
-                                   for(z=0; z< link1; z++){
-                                       if(sankey_info.links[z].target == names){sankey_info.links[z].target = sankey_info.nodes[ii].name + "   ";}
-
-                                   }
-                                       for(z=link1; z< link2 +link1; z++){
-                                           if(sankey_info.links[z].source == names){sankey_info.links[z].source = sankey_info.nodes[ii].name + "   "; check2=7}
-
-                                       }
-                                   }
-                               if(check2==7){
-
-                                   for(z=link1; z< link2 +link1; z++){
-                                       if(sankey_info.links[z].target == names){sankey_info.links[z].target = sankey_info.nodes[ii].name + "  ";}
-
-                                   } for(z=link1+link2; z< link2 +link1+link3; z++){
-                                       if(sankey_info.links[z].source == names){sankey_info.links[z].source = sankey_info.nodes[ii].name + "  ";}
-                                   } for(z=link1+link2; z< link2 +link1+link3; z++){
-                                       if(sankey_info.links[z].target == names){sankey_info.links[z].target = sankey_info.nodes[ii].name + " ";}
-                                   }
-                               }
-
-
-                           sankey_info.nodes[ii].name = sankey_info.nodes[ii].name + "   "
-                           sankey_info.nodes[count[0]].name = names+ "  "
-                           sankey_info.nodes[count[1]].name = names+ " "
-
-
-
-                       }
-
-                       if(count.length ==  1){
-
-                           var check1 =0
-                           var check2 =0;
-
-                           for(z=0; z< link1; z++){
-                               if(sankey_info.links[z].source == names){sankey_info.links[z].source = sankey_info.nodes[ii].name + "  "; check1=1}
-
-                           }
-                           for(z=0; z< link1; z++){
-                               if(sankey_info.links[z].target == names){sankey_info.links[z].target = sankey_info.nodes[ii].name + " "; check2 =5}
-
-                           }
-
-                           if(check1==1 && check2 ==5){
-                               for(z=link1; z< link2 +link1; z++){
-                                   if(sankey_info.links[z].source == names){sankey_info.links[z].source = sankey_info.nodes[ii].name + " "}
-                               }
-
-                           }
-
-
-                           if(check1==1 && check2!=5){
-
-                               for(z=link1; z< link2 +link1; z++){
-                                   if(sankey_info.links[z].target == names){sankey_info.links[z].target = sankey_info.nodes[ii].name + " "; check2=3}
-
-                               }
-                           }
-
-                           if(check2==3){
-                               for(z=link1+link2; z< link2 +link1+link3; z++){
-                                   if(sankey_info.links[z].source == names){sankey_info.links[z].source = sankey_info.nodes[ii].name + " ";}
-                               }
-
-                           }
-
-                           if(check1==1 && check2!=5){
-
-                               for(z=link1+link2; z< link2 +link1+link3; z++){
-                                   if(sankey_info.links[z].target == names){sankey_info.links[z].target = sankey_info.nodes[ii].name + " "}
-
-                               }
-                           }
-
-                           if(check2==5 && check1!=1){
-                               for(z=link1; z< link2 +link1; z++){
-                                   if(sankey_info.links[z].source == names){sankey_info.links[z].source = sankey_info.nodes[ii].name + " "; check1=6}
-                               }
-                               for(z=link1; z< link2 +link1; z++){
-                                   if(sankey_info.links[z].target == names ){sankey_info.links[z].target = sankey_info.nodes[ii].name + "  "; check2=7}
-
-                               }
-                           }
-
-
-
-
-                           if(check2==7 && check1==6){
-
-                               for(z=link1 +link2; z< link2 +link1+link3; z++){
-                                   if(sankey_info.links[z].source == names ){sankey_info.links[z].source = sankey_info.nodes[ii].name + "  "}
-
-                               }
-                           }
-
-                           if(check1==6 && check2!=7){
-                               for(z=link1 +link2; z< link2 +link1+link3; z++){
-                                   if(sankey_info.links[z].target == names ){sankey_info.links[z].target = sankey_info.nodes[ii].name + "  "}
-
-                               }
-                           }
-
-                           if(check1==0 && check2 ==0){
-
-                               console.log(names)
-                               console.log("test")
-                               for(z=link1; z< link2 +link1; z++) {
-                                   if (sankey_info.links[z].target == names) {
-                                       sankey_info.links[z].target = sankey_info.nodes[ii].name + "  "
-                                   }
-                               }
-                                   for(z=link1 +link2; z< link2 +link1+link3; z++){
-                                       if(sankey_info.links[z].source == names ){sankey_info.links[z].source = sankey_info.nodes[ii].name + "  "}
-
-                                   }
-                                   for(z=link1 +link2; z< link2 +link1+link3; z++){
-                                       if(sankey_info.links[z].target == names ){sankey_info.links[z].target = sankey_info.nodes[ii].name + " "}
-
-                                   }
-                           }
-
-
-
-
-
-
-                           sankey_info.nodes[ii].name = sankey_info.nodes[ii].name + "  "
-                           sankey_info.nodes[count[0]].name = names+ " "
-
-
-                       }
-
-
-                   }
-
-console.log(sankey_info.nodes)
-
-               var length = sankey_info.links.length;
-               for(i=length-1; i> -1; i--){
-                   if(sankey_info.links[i].value == 0){
-                       sankey_info.links.splice(i,1);
-                   }
-               }
-
-               length = sankey_info.nodes.length
-               for(i=length-1; i> -1; i--){
-                   var check =0;
-                   for(z=0; z<sankey_info.links.length; z++){
-                       if(sankey_info.nodes[i].name==sankey_info.links[z].source || sankey_info.nodes[i].name==sankey_info.links[z].target ){
-                           check = 1;
-                       }
-                   }
-                   if(check ==0){sankey_info.nodes.splice(i,1)}
-               }
-
-
-
-
-
-               for (i = 0; i < sankey_info.nodes.length; i++) {
-                   sankey_info.nodes[i].id = i;
-               }
-               for (i = 0; i < sankey_info.links.length; i++) {
-                   sankey_info.links[i].id = i;
-               }
-
-
-
-//
-//console.log(sankey_info)
-//               if (cycle == 0) {
-//                   sankey_2004 = sankey_info
-//               }
-//               if (cycle == 1) {
-//                   sankey_2005 = sankey_info
-//               }
-//               if (cycle == 2) {
-//                   sankey_2006 = sankey_info
-//               }
-//               if (cycle == 3) {
-//                   sankey_2007 = sankey_info
-//               }
-//               if (cycle == 4) {
-//                   sankey_2008 = sankey_info
-//               }
-//               if (cycle == 5) {
-//                   sankey_2009 = sankey_info
-//               }
-//               if (cycle == 6) {
-//                   sankey_2010 = sankey_info
-//               }
-//               if (cycle == 7) {
-//                   sankey_2011 = sankey_info
-//               }
-
-
-
-               console.log(sankey_info)
-               sank.update(sankey_info)
-
-           }
-
-
-//           var year = document.getElementById("slider-time").value
-//           var year = document.getElementById("selected_year").innerHTML = String(year)
-//           if(year == 2004){sank.update(sankey_2004)}
-//           if(year == 2005){sank.update(sankey_2005)}
-//           if(year == 2006){sank.update(sankey_2006)}
-//           if(year == 2007){sank.update(sankey_2007)}
-//           if(year == 2008){sank.update(sankey_2008)}
-//           if(year == 2009){sank.update(sankey_2009)}
-//           if(year == 2010){sank.update(sankey_2010)}
-//           if(year == 2011){sank.update(sankey_2011)}
-
-
-        //};
-
-
-    //------------Events-------------------------------------------------------------------------------------------------------------------------------
-    //-------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-    d3.selectAll("input").on("change", function()
-    {
-
-
-        if (d3.select(this).attr("name") == "slider-time") {
-
-            update();
-//            var year = document.getElementById("slider-time").value
-//            document.getElementById("selected_year").innerHTML = String(year)
-//            if(year == 2004){sank.update(sankey_2004)}
-//            if(year == 2005){sank.update(sankey_2005)}
-//            if(year == 2006){sank.update(sankey_2006)}
-//            if(year == 2007){sank.update(sankey_2007)}
-//            if(year == 2008){sank.update(sankey_2008)}
-//            if(year == 2009){sank.update(sankey_2009)}
-//            if(year == 2010){sank.update(sankey_2010)}
-//            if(year == 2011){sank.update(sankey_2011)}
-
-
+    var data;
+
+    var geocoder;
+    var directionsDisplay;
+    var directionsService = new google.maps.DirectionsService();
+    var map;
+    var marker;
+    var origin = new google.maps.LatLng(42.3714, -71.1221);
+    var dest = new google.maps.LatLng(37.7683909618184, -122.51089453697205)
+    console.log(dest)
+
+    function initialize() {
+        geocoder = new google.maps.Geocoder();
+        directionsDisplay = new google.maps.DirectionsRenderer();
+        var mapOptions = {
+            zoom: 5,
+            center: origin
         }
+        map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+        directionsDisplay.setMap(map);
+
+
+         marker = new google.maps.Marker({
+            position: map.getCenter(),
+            map: map,
+            title: 'Click to zoom'
+        });
+
+        google.maps.event.addListener(marker, 'click', function() {
+
+            map.setZoom(8);
+            map.setCenter(marker.getPosition());
+
+        });
 
 
 
 
-    });
+        var locations = [
+            ['Adriana Conconi', 51.7519,-1.2578, 7],
+            ['Nick Stellitano', 42.3708,-71.1833, 6],
+            ['Diana Ortiz Sosa', 38.9047,-77.0164, 5],
+            ['Pilar Tavella', 38.9000,-77.0150, 4],
+            ['Diego Gilsanz', 40.707758, -74.00885, 3],
+            ['Selihan Yilar', 39.920770, 32.854110, 2],
+            ['Luciano Sobral', -23.550520, -46.633309, 1]
+        ];
 
 
-        //------------Helper functions-------------------------------------------------------------------------------------------------------------------------------
-        //-------------------------------------------------------------------------------------------------------------------------------------------------
 
+        var infowindow = new google.maps.InfoWindow();
 
-        // arguments: reference to select list, callback function (optional)
-        function getSelectedOptions(sel, fn) {
-            var opts = [], opt;
+        var marker, i;
 
-            // loop through options in select list
-            for (var i=0, len=sel.options.length; i<len; i++) {
-                opt = sel.options[i];
+        for (i = 0; i < locations.length; i++) {
+            marker = new google.maps.Marker({
+                position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+                map: map
+            });
 
-                // check if selected
-                if ( opt.selected ) {
-                    // add to array of option elements to return from this function
-                    opts.push(opt);
+            google.maps.event.addListener(marker, 'click', (function (marker, i) {
 
-                    // invoke optional callback function if provided
-                    if (fn) {
-                        fn(opt);
-                    }
+                return function () {
+
+                    dest.A = marker.position.A;
+                    dest.F = marker.position.F
+
+                    infowindow.setContent(locations[i][0]);
+                    infowindow.open(map, marker);
                 }
-            }
-            // return array containing references to selected option elements
-            return opts;
+            })(marker, i));
         }
 
-        console.log("test")
-
-       $("#loading").hide();
 
 
-update();
+
+    }
 
 
-//
-    };
+    function codeAddress() {
+        var address = document.getElementById('address').value;
+        geocoder.geocode({'address': address}, function (results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                map.setCenter(results[0].geometry.location);
+                var update_origin = new google.maps.Marker({
+                    map: map,
+                    position: results[0].geometry.location
+                });
+            } else {
+                alert('Geocode was not successful for the following reason: ' + status);
+            }
+        });
+    }
+
+    function calcRoute() {
+        var selectedMode = document.getElementById('mode').value;
+        console.log(origin)
+        console.log(dest)
+        var request = {
+            origin: origin,
+            destination: dest,
+            // Note that Javascript allows us to access the constant
+            // using square brackets and a string value as its
+            // "property."
+            travelMode: google.maps.TravelMode[selectedMode]
+        };
+        console.log(request)
+        directionsService.route(request, function(response, status) {
+            console.log(status)
+            if (status == google.maps.DirectionsStatus.OK) {
+                directionsDisplay.setDirections(response);
+            }
+        });
+    }
 
 
-})
+
+
+
+    d3.csv("data/data_mpaid.csv", function(raw_data){
+        data = raw_data
+        console.log(data)
+    })
+
+
+    google.maps.event.addDomListener(window, 'load', initialize);
+
 
 </script>
+
 
 </body>
 </html>
