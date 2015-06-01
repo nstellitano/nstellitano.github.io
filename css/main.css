@@ -39,7 +39,7 @@
     margin-top: 2%;
 }
 
-#directions-panel, #directions_title {
+#directions-panel, {
     height: 300px;
     float: right;
     width: 100%;
@@ -48,7 +48,13 @@
 
 }
 
+#directions_title {
+    float: right;
+    width: 100%;
+    overflow: scroll;
+    padding: 2%
 
+}
 
 /*body, html {*/
   /*margin: 0;*/
