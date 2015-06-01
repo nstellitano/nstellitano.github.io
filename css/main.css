@@ -4,10 +4,11 @@
 }
 
 #map-canvas {
-    /*width: 500px;*/
     height: 300px;
-    margin: 5%;
+    padding: 15%;
     border: solid;
+    width: 90%;
+    margin: 5%;
 }
 
 #panel_dir {
@@ -38,7 +39,7 @@
     margin-top: 2%;
 }
 
-#directions-panel {
+#directions-panel, #directions_title {
     height: 300px;
     float: right;
     width: 100%;
